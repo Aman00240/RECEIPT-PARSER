@@ -1,5 +1,7 @@
 import base64
+import io
 import json
+from PIL import Image
 from app.config import settings
 from app import schemas
 from groq import AsyncGroq
@@ -11,6 +13,28 @@ if not api_key:
     print("Api Key not found")
 
 client = AsyncGroq(api_key=api_key)
+
+
+def resize_image(image_byte: bytes, max_width: int = 1024) -> bytes:
+    try:
+        with Image.open(io.BytesIO(image_byte)) as img:
+            if img.width > max_width:
+                ratio = max_width / float(img.width)
+                new_height = int(float(img.height) * ratio)
+
+                img = img.resize((max_width, new_height), Image.Resampling.LANCZOS)
+
+            output = io.BytesIO()
+
+            if img.mode in ("RGBA", "p"):
+                img = img.convert("RGB")
+
+            img.save(output, format="JPEG", quality=85)
+            return output.getvalue()
+
+    except Exception as e:
+        print(f"Error in resizeing the image {e}")
+        return image_byte
 
 
 def encode_image(image_bytes: bytes) -> str:
