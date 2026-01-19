@@ -3,12 +3,11 @@ uvicorn
 python-multipart
 pydantic
 pydantic-settings
-streamlit 
 
 groq
 
 python-dotenv
-requests
+
 httpx
 pytest
 pytest-asyncio

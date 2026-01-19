@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, File, UploadFile
 from app.schemas import ReceiptCreate
-from app.services.vision import extract_receipt_data, resize_image
+from app.services.vision import extract_receipt_data
 
 
 router = APIRouter(prefix="/receipts", tags=["receipts"])
@@ -15,10 +15,8 @@ async def scan_receipt(file: UploadFile = File(...)):
 
     image_bytes = await file.read()
 
-    resized_image = resize_image(image_bytes)
-
     try:
-        receipt_data = await extract_receipt_data(resized_image)
+        receipt_data = await extract_receipt_data(image_bytes)
         return receipt_data
     except Exception as e:
         print(f"Error Processing requet {e}")
