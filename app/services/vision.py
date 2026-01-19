@@ -25,6 +25,7 @@ async def extract_receipt_data(image_bytes: bytes) -> schemas.ReceiptCreate:
 {
   "store_name": "string or null",
   "purchase_date": "YYYY-MM-DD or null",
+  "currency_symbol": "string (extract the symbol used, e.g. $, ₹, €, £. Default to $ if unsure)"
   "total_amount": float or null,
   "tax_amount": float or null,
   "scan_confidence": "float (0.0 to 1.0) - Lower this value if text is blurry or hard to read", 
@@ -70,6 +71,7 @@ RULES:
         ],
         model=model,
         temperature=0,
+        response_format={"type": "json_object"},
     )
     raw_response = response.choices[0].message.content
 

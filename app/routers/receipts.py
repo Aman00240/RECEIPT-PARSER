@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile, Depends
 from app.schemas import ReceiptCreate
 from app.services.vision import extract_receipt_data
+from app.utils import rate_limit
 
 
 router = APIRouter(prefix="/receipts", tags=["receipts"])
 
 
-@router.post("/scan", response_model=ReceiptCreate)
+@router.post("/scan", response_model=ReceiptCreate, dependencies=[Depends(rate_limit)])
 async def scan_receipt(file: UploadFile = File(...)):
     if file.content_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(

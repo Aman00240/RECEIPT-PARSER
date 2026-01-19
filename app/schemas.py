@@ -11,6 +11,7 @@ class ItemBase(BaseModel):
 
 class ReceiptCreate(BaseModel):
     store_name: str | None = None
+    currency_symbol: str | None = "$"
     purchase_date: datetime | None = None
     total_amount: Decimal | None = None
     tax_amount: Decimal | None = None

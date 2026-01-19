@@ -8,10 +8,11 @@ app = FastAPI(
     description="A stateless API that uses Llama 3.2 Vision to extract data from receipts.",
 )
 
+origins = ["http://127.0.0.1:8501", "https://receipt-parser-frontend.onrender.com"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

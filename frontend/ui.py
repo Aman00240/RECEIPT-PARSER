@@ -31,11 +31,13 @@ if uploaded_file is not None:
                     else:
                         display_date = raw_date or "Unknown"
 
+                    currency = data.get("currency_symbol", "$")
+
                     col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 1, 1])
                     col1.metric("Store", data.get("store_name", "Unknown"))
                     col2.metric("Date", display_date)
-                    col3.metric("Tax", f"${data.get('tax_amount', 0.0)}")
-                    col4.metric("Total", f"${data.get('total_amount', 0.0)}")
+                    col3.metric("Tax", f"{currency}{data.get('tax_amount', 0.0)}")
+                    col4.metric("Total", f"{currency}{data.get('total_amount', 0.0)}")
 
                     confidence_val = data.get("scan_confidence", 0.0)
                     col5.metric("Confidence", f"{confidence_val * 100:.0f}%")
