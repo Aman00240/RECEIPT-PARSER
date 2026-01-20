@@ -1,8 +1,36 @@
 import streamlit as st
 import os
 import requests
+import time
+
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://backend:8000")
+
+
+def send_request_with_retry(url, files, max_retries=7):
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, files=files)
+
+            if response.status_code == 200:
+                return response
+
+            if response.status_code in [502, 503]:
+                st.warning(
+                    f"Server is waking up..(Attempt {attempt + 1}/{max_retries})"
+                )
+                time.sleep(15)
+                continue
+
+            return response
+
+        except requests.exceptions.ConnectionError:
+            st.warning(
+                f"Connection lost, retrying..(Attempt {attempt + 1}/{max_retries})"
+            )
+            time.sleep(5)
+    return None
+
 
 st.set_page_config(page_title="Receipt Parser", layout="centered")
 st.title("AI Receipt Parser")
@@ -19,9 +47,11 @@ if uploaded_file is not None:
         with st.spinner("Analyzing..."):
             try:
                 files = {"file": ("receipt.jpg", uploaded_file, uploaded_file.type)}
-                response = requests.post(f"{BACKEND_URL}/receipts/scan", files=files)
+                response = send_request_with_retry(
+                    f"{BACKEND_URL}/receipts/scan", files=files
+                )
 
-                if response.status_code == 200:
+                if response is not None and response.status_code == 200:
                     data = response.json()
                     st.success("Analysis Complete")
 
@@ -48,9 +78,10 @@ if uploaded_file is not None:
 
                     with st.expander("See Raw JSON"):
                         st.json(data)
-
-                else:
+                elif response is not None:
                     st.error(f"Error {response.status_code}:{response.text}")
+                else:
+                    st.error("Server is taking too long to wake up please try again")
 
             except Exception as e:
                 st.error(f"Connection Error: {e}")
