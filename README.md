@@ -76,7 +76,7 @@ graph LR
     Backend -- Async Check --> Limiter{Rate Limit?}
     Limiter -- Yes --> Error[429 Too Many Requests]
     Limiter -- No --> AI_Service[Groq AI Service]
-    AI_Service -- Vision Analysis --> LLM(Llama 3.2 Vision)
+    AI_Service -- Vision Analysis --> LLM(llama-4-scout)
     LLM -- Raw JSON --> Validator(Pydantic Schema)
     Validator -- Structured Data --> Backend
     Backend -- JSON Response --> Frontend
