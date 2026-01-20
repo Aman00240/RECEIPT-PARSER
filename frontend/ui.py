@@ -61,9 +61,11 @@ if uploaded_file is not None:
                     else:
                         display_date = raw_date or "Unknown"
 
-                    row1_col1, row1_col2 = st.columns([2, 2])
-                    row1_col1.metric("Store", data.get("store_name", "Unknown"))
-                    row1_col2.metric("Date", display_date)
+                    st.metric("Store", data.get("store_name", "Unknown"))
+
+                    st.divider()
+
+                    st.metric("Date", display_date)
 
                     st.divider()
 
