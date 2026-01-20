@@ -61,16 +61,21 @@ if uploaded_file is not None:
                     else:
                         display_date = raw_date or "Unknown"
 
-                    currency = data.get("currency_symbol", "$")
+                    row1_col1, row1_col2 = st.columns([2, 2])
+                    row1_col1.metric("Store", data.get("store_name", "Unknown"))
+                    row1_col2.metric("Date", display_date)
 
-                    col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 2, 1])
-                    col1.metric("Store", data.get("store_name", "Unknown"))
-                    col2.metric("Date", display_date)
-                    col3.metric("Tax", f"{currency}{data.get('tax_amount', 0.0)}")
-                    col4.metric("Total", f"{currency}{data.get('total_amount', 0.0)}")
+                    st.divider()
+
+                    row2_col1, row2_col2, row2_col3 = st.columns([2, 2, 1])
+                    currency = data.get("currency_symbol", "$")
+                    row2_col1.metric(
+                        "Total", f"{currency}{data.get('total_amount', 0.0)}"
+                    )
+                    row2_col2.metric("Tax", f"{currency}{data.get('tax_amount', 0.0)}")
 
                     confidence_val = data.get("scan_confidence", 0.0)
-                    col5.metric("Confidence", f"{confidence_val * 100:.0f}%")
+                    row2_col3.metric("Confidence", f"{confidence_val * 100:.0f}%")
 
                     if data.get("items"):
                         st.write("### Purchased Items")
