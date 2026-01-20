@@ -63,7 +63,7 @@ if uploaded_file is not None:
 
                     currency = data.get("currency_symbol", "$")
 
-                    col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 1, 1])
+                    col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 2, 1])
                     col1.metric("Store", data.get("store_name", "Unknown"))
                     col2.metric("Date", display_date)
                     col3.metric("Tax", f"{currency}{data.get('tax_amount', 0.0)}")
